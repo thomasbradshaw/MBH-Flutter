@@ -15,19 +15,24 @@ class WeightEntryDialog extends StatefulWidget {
   final double initialWeight;
   final WeightEntry weighEntryToEdit;
 
+  //
   WeightEntryDialog.add(this.initialWeight) : weighEntryToEdit = null;
 
+  //
   WeightEntryDialog.edit(this.weighEntryToEdit)
       : initialWeight = weighEntryToEdit.weight;
 
   @override
   WeightEntryDialogState createState() {
     if (weighEntryToEdit != null) {
-      return new WeightEntryDialogState(weighEntryToEdit.dateTime,
-          weighEntryToEdit.weight, weighEntryToEdit.note);
+      return new WeightEntryDialogState(
+        weighEntryToEdit.dateTime,
+          weighEntryToEdit.weight, 
+          weighEntryToEdit.note,
+          weighEntryToEdit.image);
     } else {
       return new WeightEntryDialogState(
-          new DateTime.now(), initialWeight, null);
+          new DateTime.now(), initialWeight, null, null);
     }
   }
 }
@@ -39,11 +44,11 @@ class WeightEntryDialogState extends State<WeightEntryDialog> {
   DateTime _dateTime = new DateTime.now();
   double _weight;
   String _note;
-  TextEditingController _textController;
   File _image;
+  TextEditingController _textController;
 
   // Constructor
-  WeightEntryDialogState(this._dateTime, this._weight, this._note);
+  WeightEntryDialogState(this._dateTime, this._weight, this._note, this._image);
 
   // getImage
   Future getImage() async {
@@ -64,7 +69,7 @@ class WeightEntryDialogState extends State<WeightEntryDialog> {
           onPressed: () {
             Navigator
                 .of(context)
-                .pop(new WeightEntry(_dateTime, _weight, _note));
+                .pop(new WeightEntry(_dateTime, _weight, _note, _image));
           },
           child: new Text('SAVE',
               style: Theme
@@ -118,9 +123,9 @@ class WeightEntryDialogState extends State<WeightEntryDialog> {
             ),
             onTap: () => _showWeightPicker(context),
           ),
-          new Image.file(_image,
-            height: 200.0,
-            fit: BoxFit.cover,),
+          _image != null
+              ? new Image.file(_image, height: 200.0, fit: BoxFit.cover)
+              : new Container(),
           new ButtonBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -156,11 +161,11 @@ class WeightEntryDialogState extends State<WeightEntryDialog> {
       context: context,
       // next line was 'child:'
       builder: (BuildContext context) => new NumberPickerDialog.decimal(
-        minValue: 1,
-        maxValue: 150,
-        initialDoubleValue: _weight,
-        title: new Text("Enter your weight"),
-      ),
+            minValue: 1,
+            maxValue: 150,
+            initialDoubleValue: _weight,
+            title: new Text("Enter your weight"),
+          ),
     ).then((value) {
       if (value != null) {
         setState(() => _weight = value);
