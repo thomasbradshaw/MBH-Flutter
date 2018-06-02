@@ -62,8 +62,8 @@ class WeightEntryDialogState extends State<WeightEntryDialog> {
   Widget _createAppBar(BuildContext context) {
     return new AppBar(
       title: widget.weighEntryToEdit == null
-          ? const Text("New entry")
-          : const Text("Edit entry"),
+          ? const Text("New Location")
+          : const Text("Edit Location"),
       actions: [
         new FlatButton(
           onPressed: () {
